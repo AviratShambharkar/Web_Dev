@@ -44,6 +44,8 @@ Competitive programming platforms like Codeforces, CodeChef, and LeetCode have b
 
 ### Database Design (MongoDB):
 
+**May add or remove new collections, fields depending upon need and ease of the implementation**.
+
 - Collection 1: problems
 
   - id: ObjectId (Unique identifier for the problem)
@@ -61,8 +63,6 @@ Competitive programming platforms like Codeforces, CodeChef, and LeetCode have b
   - submissions: Number (Count or reference to submissions made for this problem)
   - likes: Number (Number of likes or upvotes the problem has received) May or May not add
   - dislikes: Number (Number of dislikes or downvotes the problem has received) May or May not add
-
-**May add or remove new collections, fields depending upon need and ease of the implementation**.
 
 - Users Collection Schema
 
