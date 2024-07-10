@@ -82,3 +82,65 @@ Competitive programming platforms like Codeforces, CodeChef, and LeetCode have b
   - activity: Object (Nested object containing activity information) May or May not add
     - last_login: Date (Timestamp of the last login)
     - login_attempts: Number (Number of login attempts)
+
+### Web Server Designing: Essential Pages
+
+- Authentication Pages:
+
+  - Login Page: Allows users and admins to log in.
+  - Signup Page: Allows new users and admins to create an account.
+  - Forgot Password Page: Allows users to reset their password. (May or May not be)
+  - Profile Page: Displays and allows users to edit their profile information. (May or May not be)
+
+- Home and Dashboard Pages:
+
+  - Home Page: Overview of the platform, featuring problems, announcements, and links to contests.
+  - User Dashboard: Personalized dashboard showing user statistics, recent activity, and recommendations. (May or May not be)
+  - Admin Dashboard: Dashboard for admins to manage problems, users, and contests.
+
+- Problem Pages:
+
+  - Problem List Page: Displays a list of all problems with filtering and sorting options.
+  - Problem Detail Page: Displays the details of a specific problem, including description, input/output specifications, constraints, and examples.
+  - Problem Submission Page: Allows users to submit their solutions for a specific problem.
+
+- Contest Pages:
+
+  - Contest List Page: Displays a list of upcoming and past contests.
+  - Contest Detail Page: Provides details about a specific contest, including rules, schedule, and problems.
+  - Contest Participation Page: Interface for users to participate in an ongoing contest, view problems, and submit solutions.
+
+### Web Server EndPoints (APIs):
+
+- 1. Authentication:
+
+  - POST /api/auth/login
+  - POST /api/auth/signup
+  - POST /api/auth/logout
+  - POST /api/auth/forgot-password
+  - POST /api/auth/reset-password
+
+- 2. Users:
+
+  - GET /api/users/:id
+  - PUT /api/users/:id
+  - GET /api/users/:id/statistics (May or May not be)
+  - GET /api/users/:id/activity (May or May not be)
+
+- 3. Problems:
+
+  - GET /api/problems
+  - GET /api/problems/:id
+  - POST /api/problems
+  - PUT /api/problems/:id
+  - DELETE /api/problems/:id
+  - POST /api/problems/:id/submit
+
+- 4. Contests:
+
+  - GET /api/contests
+  - GET /api/contests/:id
+  - POST /api/contests
+  - PUT /api/contests/:id
+  - DELETE /api/contests/:id
+  - POST /api/contests/:id/participate
