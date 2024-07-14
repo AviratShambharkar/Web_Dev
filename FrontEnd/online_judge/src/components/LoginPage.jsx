@@ -1,31 +1,21 @@
 import { useState } from "react";
-<<<<<<< HEAD
 import { Link, useNavigate } from "react-router-dom";
-=======
-import { Link } from "react-router-dom";
->>>>>>> 6cf0a87c67f0683187bbb8ad2c818981437ac3a1
 import { login } from "../services/authService";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-<<<<<<< HEAD
   const navigate = useNavigate();
-=======
->>>>>>> 6cf0a87c67f0683187bbb8ad2c818981437ac3a1
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const response = await login(email, password);
       // Handle successful login (e.g., store token, redirect user)
-<<<<<<< HEAD
       localStorage.setItem("token", response.token);
       localStorage.setItem("user", JSON.stringify(response.user));
       navigate("/home");
-=======
->>>>>>> 6cf0a87c67f0683187bbb8ad2c818981437ac3a1
       console.log("Login successful:", response);
     } catch (err) {
       setError("Invalid email or password");
