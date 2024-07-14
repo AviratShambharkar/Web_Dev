@@ -1,12 +1,7 @@
 import { useState } from "react";
-<<<<<<< HEAD
 import { Link, useNavigate } from "react-router-dom";
 import { signUp } from "../services/authService";
 //import HomePage from "./components/HomePage";
-=======
-import { Link } from "react-router-dom";
-import { signUp } from "../services/authService";
->>>>>>> 6cf0a87c67f0683187bbb8ad2c818981437ac3a1
 
 function SignUpPage() {
   const [formData, setFormData] = useState({
@@ -18,10 +13,7 @@ function SignUpPage() {
   });
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-<<<<<<< HEAD
   const navigate = useNavigate();
-=======
->>>>>>> 6cf0a87c67f0683187bbb8ad2c818981437ac3a1
 
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
@@ -32,12 +24,9 @@ function SignUpPage() {
     try {
       const response = await signUp(formData);
       // Handle successful registration (e.g., redirect to login page)
-<<<<<<< HEAD
       localStorage.setItem("token", response.token);
       localStorage.setItem("user", JSON.stringify(response.user));
       navigate("/home");
-=======
->>>>>>> 6cf0a87c67f0683187bbb8ad2c818981437ac3a1
       console.log("Registration successful:", response);
     } catch (err) {
       setError("Registration failed");
