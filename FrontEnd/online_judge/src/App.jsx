@@ -11,6 +11,7 @@ import HomePage from "./components/HomePage";
 import ForgotPasswordPage from "./components/ForgotPasswordPage";
 import ResetPasswordPage from "./components/ResetPasswordPage";
 import Profile from "./components/Profile";
+import EditProfile from "./components/EditProfile";
 import Navbar from "./components/Navbar";
 
 function App() {
@@ -36,6 +37,7 @@ function AppContent() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/edit-profile" element={<EditProfile />} />
       </Routes>
     </div>
   );
