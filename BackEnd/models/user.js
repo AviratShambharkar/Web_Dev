@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   userName: {
     type: String,
     required: true,
-    unique: true,
+    unique: false,
   },
   email: {
     type: String,
@@ -33,15 +33,15 @@ const userSchema = new mongoose.Schema({
   profile: {
     name: {
       type: String,
-      default: null,
+      default: "user",
     },
     bio: {
       type: String,
-      default: null,
+      default: "test bio",
     },
     avatarUrl: {
       type: String,
-      default: null,
+      default: "http://example.com/avatar.jpg",
     },
   },
   preferences: {
@@ -65,6 +65,8 @@ const userSchema = new mongoose.Schema({
       default: 0,
     },
   },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
 });
 
 const User = mongoose.model("User", userSchema);

@@ -6,6 +6,7 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
@@ -58,14 +59,14 @@ function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <div>
+            <div className="relative">
               <label htmlFor="password" className="sr-only">
                 Password
               </label>
               <input
                 id="password"
                 name="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
@@ -73,10 +74,29 @@ function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 px-3 flex items-center text-sm leading-5"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <img
+                    src="https://www.svgrepo.com/show/348348/eye-crossed.svg"
+                    alt="Hide Password"
+                    className="h-5 w-5 text-gray-500"
+                  />
+                ) : (
+                  <img
+                    src="https://www.svgrepo.com/show/103061/eye.svg"
+                    alt="Show Password"
+                    className="h-5 w-5 text-gray-500"
+                  />
+                )}
+              </button>
             </div>
           </div>
           <div className="flex items-center justify-between">
-            <div className="flex items-center">
+            {/* <div className="flex items-center">
               <input
                 id="remember-me"
                 name="remember-me"
@@ -89,14 +109,14 @@ function LoginPage() {
               >
                 Remember me
               </label>
-            </div>
+            </div> */}
             <div className="text-sm">
-              <a
-                href="#"
+              <Link
+                to="/forgot-password"
                 className="font-medium text-blue-500 hover:text-blue-400"
               >
                 Forgot password?
-              </a>
+              </Link>
             </div>
           </div>
           <div>
@@ -107,7 +127,7 @@ function LoginPage() {
               Sign in to your account
             </button>
           </div>
-          <div className="flex items-center justify-center mt-6">
+          {/* <div className="flex items-center justify-center mt-6">
             <button className="w-full bg-white text-gray-900 font-semibold py-2 px-4 border border-gray-300 rounded-md hover:bg-gray-50 flex items-center justify-center">
               <img
                 src="https://www.svgrepo.com/show/355037/google.svg"
@@ -126,7 +146,7 @@ function LoginPage() {
               />
               Sign in with Apple
             </button>
-          </div>
+          </div> */}
         </form>
       </div>
     </div>

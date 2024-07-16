@@ -3,14 +3,20 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import nodemailer from "nodemailer";
+import crypto from "crypto";
 import "dotenv/config";
+import dbConnect from "./database/db.js";
+import problemRoutes from "./routes/problems.js";
+import User from "./models/user.js";
+import userRoutes from "./routes/user.js";
 
 const app = express();
 const port = 3000;
 
 app.use(
   cors({
-    origin: "http://localhost:5173", //
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );
@@ -18,9 +24,6 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
-import dbConnect from "./database/db.js";
-import User from "./models/user.js";
 
 dbConnect();
 
@@ -32,36 +35,119 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
+// Use problem routes
+app.use("/problems", problemRoutes);
+
+app.use("/user", userRoutes);
+
+// Endpoint to request password reset
+app.post("/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "User with this email does not exist." });
+    }
+
+    const token = crypto.randomBytes(20).toString("hex");
+
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+    await user.save();
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: user.email,
+      subject: "Password Reset",
+      text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
+             Please click on the following link, or paste this into your browser to complete the process within one hour of receiving it:\n\n
+             http://localhost:5173/reset-password/${token}\n\n
+             If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res
+      .status(200)
+      .json({ message: "Password reset link has been sent to your email." });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Endpoint to reset password
+app.post("/reset-password/:token", async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "Password reset token is invalid or has expired." });
+    }
+
+    const hashPassword = await bcrypt.hash(password, 10);
+
+    user.password = hashPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    res.status(200).json({ message: "Password has been reset successfully." });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Signup, login, and logout endpoints remain the same
 app.post("/signUp", async (req, res) => {
   try {
-    // Get all the data from the request body
     const {
       userName,
       email,
       password,
-      name,
-      bio,
-      avatarUrl,
+      name = "Anonymous", // Default value for name
+      bio = "This user prefers to keep an air of mystery about them.", // Default value for bio
       programmingLanguage,
       theme,
       role,
     } = req.body;
 
-    // Check that all the required data exists
     if (!userName || !email || !password) {
       return res.status(400).send("Please enter all the required fields");
     }
 
-    // Check if the user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).send("User already exists");
     }
 
-    // Encrypt the password
     const hashPassword = await bcrypt.hash(password, 10);
 
-    // Save user to the database
+    // Generate avatar URL using DiceBear API
+    const avatarUrl = `https://api.dicebear.com/5.x/initials/svg?seed=${encodeURIComponent(
+      name || userName
+    )}`;
+
     const user = await User.create({
       userName,
       email,
@@ -78,7 +164,6 @@ app.post("/signUp", async (req, res) => {
       },
     });
 
-    // Generate a token for the user and send it
     const token = jwt.sign(
       { id: user._id, email: user.email },
       process.env.SECRET_KEY,
@@ -100,29 +185,24 @@ app.post("/signUp", async (req, res) => {
 
 app.post("/login", async (req, res) => {
   try {
-    // Get all the data from the request body
     const { email, password } = req.body;
 
-    // Check that all the data exists
     if (!email || !password) {
       return res
         .status(400)
         .json({ message: "Please provide all the required data" });
     }
 
-    // Find the user in the database
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // Check if the password is correct
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // Create tokens
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role },
       process.env.SECRET_KEY,
@@ -131,15 +211,13 @@ app.post("/login", async (req, res) => {
       }
     );
 
-    // Store cookies
     const options = {
       expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
-      httpOnly: true, // Only manipulate by server, not by client/user
-      secure: true, // Ensure the cookie is sent over HTTPS
-      sameSite: "Strict", // Prevent CSRF attacks
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
     };
 
-    // Send the response
     res
       .status(200)
       .cookie("token", token, options)
@@ -164,7 +242,6 @@ app.post("/login", async (req, res) => {
 
 app.post("/logout", (req, res) => {
   try {
-    // Clear the token cookie
     res.clearCookie("token", {
       httpOnly: true,
       secure: true,

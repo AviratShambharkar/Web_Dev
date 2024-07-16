@@ -6,6 +6,7 @@ const API_URL = "http://localhost:3000";
 export const login = async (email, password) => {
   try {
     const response = await axios.post(`${API_URL}/login`, { email, password });
+    localStorage.setItem("token", response.data.token); // Save token to localStorage
     return response.data;
   } catch (error) {
     console.error("Error logging in:", error);
