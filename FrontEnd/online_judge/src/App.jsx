@@ -13,6 +13,8 @@ import ResetPasswordPage from "./components/ResetPasswordPage";
 import Profile from "./components/Profile";
 import EditProfile from "./components/EditProfile";
 import Navbar from "./components/Navbar";
+import AddProblem from "./components/AddProblem";
+import MyProblems from "./components/MyProblems";
 
 function App() {
   return (
@@ -37,6 +39,8 @@ function AppContent() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/my-problems" element={<MyProblems />} />
+        <Route path="/add-problem" element={<AddProblem />} />
         <Route path="/edit-profile" element={<EditProfile />} />
       </Routes>
     </div>

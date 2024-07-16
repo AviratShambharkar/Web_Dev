@@ -82,3 +82,13 @@ export const deleteProblem = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+// Get problems by user ID
+export const getUserProblems = async (req, res) => {
+  try {
+    const problems = await Problem.find({ author: req.user.id });
+    res.status(200).json(problems);
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

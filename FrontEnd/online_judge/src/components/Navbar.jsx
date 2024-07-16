@@ -24,11 +24,11 @@ function Navbar() {
           HackathonHub
         </Link>
         <div className="flex items-center space-x-4">
-          <Link to="/explore1" className="hover:text-gray-400">
-            Explore 1
+          <Link to="/add-problem" className="hover:text-gray-400">
+            Add Problem
           </Link>
-          <Link to="/explore2" className="hover:text-gray-400">
-            Explore 2
+          <Link to="/my-problems" className="hover:text-gray-400">
+            My Problems
           </Link>
           <Link to="/explore3" className="hover:text-gray-400">
             Explore 3
