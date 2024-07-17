@@ -15,6 +15,7 @@ import EditProfile from "./components/EditProfile";
 import Navbar from "./components/Navbar";
 import AddProblem from "./components/AddProblem";
 import MyProblems from "./components/MyProblems";
+import UpdateProblem from "./components/UpdateProblem";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function AppContent() {
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/my-problems" element={<MyProblems />} />
+        <Route path="/my-problems/:id/update" element={<UpdateProblem />} />
         <Route path="/add-problem" element={<AddProblem />} />
         <Route path="/edit-profile" element={<EditProfile />} />
       </Routes>
