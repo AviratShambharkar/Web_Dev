@@ -16,6 +16,7 @@ import Navbar from "./components/Navbar";
 import AddProblem from "./components/AddProblem";
 import MyProblems from "./components/MyProblems";
 import UpdateProblem from "./components/UpdateProblem";
+import ProblemDetail from "./components/ProblemDetail";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function AppContent() {
         <Route path="/my-problems/:id/update" element={<UpdateProblem />} />
         <Route path="/add-problem" element={<AddProblem />} />
         <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/problems/:id" element={<ProblemDetail />} />
       </Routes>
     </div>
   );

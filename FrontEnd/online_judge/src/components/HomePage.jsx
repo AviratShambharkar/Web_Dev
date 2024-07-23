@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import { getAllProblems } from "../services/problemService";
 
 function HomePage() {
   const [problems, setProblems] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProblems = async () => {
@@ -33,7 +35,11 @@ function HomePage() {
           ) : (
             <div className="space-y-4">
               {problems.map((problem) => (
-                <div key={problem._id} className="p-4 border rounded">
+                <div
+                  key={problem._id}
+                  className="p-4 border rounded cursor-pointer"
+                  onClick={() => navigate(`/problems/${problem._id}`)}
+                >
                   <h3 className="text-xl font-bold">{problem.title}</h3>
                   <p>{problem.description}</p>
                   <p>
