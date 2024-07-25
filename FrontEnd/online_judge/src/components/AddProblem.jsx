@@ -33,7 +33,7 @@ function AddProblem() {
 
     try {
       await axiosInstance.post("/problems", problemData);
-      navigate("/problems");
+      navigate("/my-problems");
     } catch (error) {
       console.error("Failed to add problem:", error);
     }
