@@ -38,6 +38,30 @@ function UpdateProblem() {
     }));
   };
 
+  const handleTestCaseChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedTestCases = [...problem.test_cases];
+    updatedTestCases[index] = { ...updatedTestCases[index], [name]: value };
+    setProblem((prevProblem) => ({
+      ...prevProblem,
+      test_cases: updatedTestCases,
+    }));
+  };
+
+  const addTestCase = () => {
+    setProblem((prevProblem) => ({
+      ...prevProblem,
+      test_cases: [...prevProblem.test_cases, { input: "", output: "" }],
+    }));
+  };
+
+  const removeTestCase = (index) => {
+    setProblem((prevProblem) => ({
+      ...prevProblem,
+      test_cases: prevProblem.test_cases.filter((_, i) => i !== index),
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -131,6 +155,48 @@ function UpdateProblem() {
             }
             className="w-full p-2 border rounded"
           />
+        </div>
+        <div>
+          <label className="block font-bold">Test Cases</label>
+          {problem.test_cases.map((testCase, index) => (
+            <div key={index} className="border p-2 mb-2 rounded">
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-bold">Test Case {index + 1}</h3>
+                <button
+                  type="button"
+                  onClick={() => removeTestCase(index)}
+                  className="text-red-500"
+                >
+                  Remove
+                </button>
+              </div>
+              <div>
+                <label className="block font-bold">Input</label>
+                <textarea
+                  name="input"
+                  value={testCase.input}
+                  onChange={(e) => handleTestCaseChange(index, e)}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+              <div>
+                <label className="block font-bold">Output</label>
+                <textarea
+                  name="output"
+                  value={testCase.output}
+                  onChange={(e) => handleTestCaseChange(index, e)}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={addTestCase}
+            className="w-full p-2 bg-green-500 text-white rounded"
+          >
+            Add Test Case
+          </button>
         </div>
         <button
           type="submit"
