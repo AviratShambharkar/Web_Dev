@@ -210,6 +210,10 @@ function AddProblem() {
           Submit Problem
         </button>
       </form>
+      <p className="text-red-500 mt-4">
+        Note: Make sure to add all the constraints and input method properly.
+        For an array, make sure to add its size as an input parameter.
+      </p>
     </div>
   );
 }
