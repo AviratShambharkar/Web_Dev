@@ -1,6 +1,7 @@
 import express from "express";
 import { authMiddleware } from "../middleware/auth.js";
 import User from "../models/user.js";
+import UserCode from "../models/userCode.js";
 
 const router = express.Router();
 
@@ -28,6 +29,44 @@ router.put("/profile", authMiddleware, async (req, res) => {
     await user.save();
 
     res.json({ message: "Profile updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/saveUserCode", authMiddleware, async (req, res) => {
+  try {
+    const { problemId, code, language } = req.body;
+    const userId = req.user.id;
+
+    let userCode = await UserCode.findOne({ userId, problemId, language });
+
+    if (userCode) {
+      userCode.code = code;
+    } else {
+      userCode = new UserCode({ userId, problemId, code, language });
+    }
+
+    await userCode.save();
+
+    res.json({ message: "Code saved successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.get("/getUserCode", authMiddleware, async (req, res) => {
+  try {
+    const { problemId, language } = req.query;
+    const userId = req.user.id;
+
+    const userCode = await UserCode.findOne({ userId, problemId, language });
+
+    if (!userCode) {
+      return res.status(404).json({ message: "User code not found" });
+    }
+
+    res.json({ code: userCode.code });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
