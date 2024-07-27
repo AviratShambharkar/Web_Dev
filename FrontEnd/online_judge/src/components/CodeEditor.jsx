@@ -6,6 +6,12 @@ import { python } from "@codemirror/lang-python";
 import { java } from "@codemirror/lang-java";
 import { runCode } from "../services/compilerService";
 import { getProblemById } from "../services/problemService";
+import {
+  getUserCode,
+  saveUserCode,
+  getAllSubmissions,
+} from "../services/codeService";
+import { getUserProfile } from "../services/userService";
 
 const codeTemplates = {
   cpp: `#include <iostream>
@@ -38,10 +44,42 @@ const CodeEditor = () => {
   const [output, setOutput] = useState("");
   const [language, setLanguage] = useState("cpp");
   const [testCases, setTestCases] = useState([]);
-  //const [testCaseIndex, setTestCaseIndex] = useState(0);
   const { id } = useParams();
   const [problem, setProblem] = useState(null);
   const [testResults, setTestResults] = useState([]);
+  const [userId, setUserId] = useState(null);
+  const [showSubmissions, setShowSubmissions] = useState(false);
+  const [submissions, setSubmissions] = useState([]);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const profile = await getUserProfile();
+        setUserId(profile._id);
+      } catch (error) {
+        console.error("Failed to fetch user profile:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+  useEffect(() => {
+    if (userId && id && language) {
+      const fetchUserCode = async () => {
+        try {
+          const userCode = await getUserCode(id, userId, language);
+          if (userCode && userCode.code) {
+            setCode(userCode.code);
+          }
+        } catch (error) {
+          console.error("Failed to fetch user code:", error);
+        }
+      };
+
+      fetchUserCode();
+    }
+  }, [userId, id, language]);
 
   useEffect(() => {
     setCode(codeTemplates[language]);
@@ -51,7 +89,6 @@ const CodeEditor = () => {
     const fetchProblem = async () => {
       try {
         const data = await getProblemById(id);
-        console.log("Fetched problem test cases:", data.test_cases); // Log test cases here
         setProblem(data);
         setTestCases(data.test_cases || []);
       } catch (error) {
@@ -61,6 +98,20 @@ const CodeEditor = () => {
 
     fetchProblem();
   }, [id]);
+
+  if (!problem) {
+    return <div>Loading...</div>;
+  }
+
+  const handleViewSubmissions = async () => {
+    try {
+      const data = await getAllSubmissions(id);
+      setSubmissions(data);
+      setShowSubmissions(true);
+    } catch (error) {
+      console.error("Failed to fetch submissions:", error);
+    }
+  };
 
   if (!problem) {
     return <div>Loading...</div>;
@@ -102,6 +153,13 @@ const CodeEditor = () => {
           )
           .join("\n\n")
       );
+      if (userId && id && language) {
+        try {
+          await saveUserCode(id, userId, code, language);
+        } catch (error) {
+          console.error("Failed to save user code:", error);
+        }
+      }
     } else {
       setOutput("No test cases available");
     }
@@ -123,6 +181,42 @@ const CodeEditor = () => {
 
   return (
     <div className="flex flex-col h-full">
+      <style>
+        {`
+          .modal {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+          }
+          .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+          }
+          .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+          }
+          .close:hover,
+          .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+          }
+        `}
+      </style>
       <select
         value={language}
         onChange={(e) => setLanguage(e.target.value)}
@@ -144,6 +238,12 @@ const CodeEditor = () => {
         className="p-2 bg-gray-800 text-white rounded"
       >
         Run Code
+      </button>
+      <button
+        onClick={handleViewSubmissions}
+        className="p-2 bg-blue-500 text-white rounded mt-2"
+      >
+        View All Submissions
       </button>
       <textarea
         value={output}
@@ -167,6 +267,23 @@ const CodeEditor = () => {
               <p>{result.passed ? "Passed" : "Failed"}</p>
             </div>
           ))}
+        </div>
+      )}
+      {showSubmissions && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={() => setShowSubmissions(false)}>
+              &times;
+            </span>
+            <h2>All Submissions</h2>
+            {submissions.map((submission, index) => (
+              <div key={index} className="p-2 mb-2 border rounded">
+                <p>User: {submission.userId.userName}</p>
+                <p>Code: {submission.code}</p>
+                <p>Language: {submission.language}</p>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
