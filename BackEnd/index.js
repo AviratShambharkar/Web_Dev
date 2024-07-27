@@ -10,6 +10,7 @@ import dbConnect from "./database/db.js";
 import problemRoutes from "./routes/problems.js";
 import User from "./models/user.js";
 import userRoutes from "./routes/user.js";
+import submissionRoutes from "./routes/submissions.js";
 
 const app = express();
 const port = 3000;
@@ -39,6 +40,8 @@ app.get("/", (req, res) => {
 app.use("/problems", problemRoutes);
 
 app.use("/user", userRoutes);
+
+app.use("/submissions", submissionRoutes);
 
 // Endpoint to request password reset
 app.post("/forgot-password", async (req, res) => {
