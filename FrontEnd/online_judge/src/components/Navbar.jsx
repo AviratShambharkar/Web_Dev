@@ -30,9 +30,9 @@ function Navbar() {
           <Link to="/my-problems" className="hover:text-gray-400">
             My Problems
           </Link>
-          <Link to="/explore3" className="hover:text-gray-400">
+          {/* <Link to="/explore3" className="hover:text-gray-400">
             Explore 3
-          </Link>
+          </Link> */}
           <Menu as="div" className="relative">
             <Menu.Button className="flex items-center space-x-1 hover:text-gray-400">
               <span>Account</span>

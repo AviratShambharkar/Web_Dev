@@ -241,7 +241,7 @@ const CodeEditor = () => {
       </select>
       <CodeMirror
         value={code}
-        height="300px"
+        height="600px"
         extensions={[languageMode()]}
         onChange={(value) => setCode(value)}
         theme="dark"
