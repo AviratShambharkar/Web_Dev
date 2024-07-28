@@ -18,6 +18,11 @@ const userCodeSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  status: {
+    type: String,
+    enum: ["unsolved", "attempted", "solved"],
+    default: "unsolved",
+  },
 });
 
 const UserCode = mongoose.model("UserCode", userCodeSchema);
