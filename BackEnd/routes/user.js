@@ -36,13 +36,14 @@ router.put("/profile", authMiddleware, async (req, res) => {
 
 router.post("/saveUserCode", authMiddleware, async (req, res) => {
   try {
-    const { problemId, code, language } = req.body;
+    const { problemId, code, language, status } = req.body;
     const userId = req.user.id;
 
     let userCode = await UserCode.findOne({ userId, problemId, language });
 
     if (userCode) {
       userCode.code = code;
+      userCode.status = status;
     } else {
       userCode = new UserCode({ userId, problemId, code, language });
     }
@@ -66,7 +67,7 @@ router.get("/getUserCode", authMiddleware, async (req, res) => {
       return res.status(404).json({ message: "User code not found" });
     }
 
-    res.json({ code: userCode.code });
+    res.json({ code: userCode.code, status: userCode.status });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
