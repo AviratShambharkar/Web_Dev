@@ -1,12 +1,19 @@
 import axiosInstance from "./axiosInstance";
 
-export const saveUserCode = async (problemId, userId, code, language) => {
+export const saveUserCode = async (
+  problemId,
+  userId,
+  code,
+  language,
+  status
+) => {
   try {
     const response = await axiosInstance.post("/user/saveUserCode", {
       problemId,
       userId,
       code,
       language,
+      status,
     });
     return response.data;
   } catch (error) {
