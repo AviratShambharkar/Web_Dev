@@ -50,6 +50,7 @@ const CodeEditor = () => {
   const [userId, setUserId] = useState(null);
   const [showSubmissions, setShowSubmissions] = useState(false);
   const [submissions, setSubmissions] = useState([]);
+  const [status, setStatus] = useState("unsolved");
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -71,6 +72,7 @@ const CodeEditor = () => {
           const userCode = await getUserCode(id, userId, language);
           if (userCode && userCode.code) {
             setCode(userCode.code);
+            setStatus(userCode.status);
           }
         } catch (error) {
           console.error("Failed to fetch user code:", error);
@@ -113,19 +115,19 @@ const CodeEditor = () => {
     }
   };
 
-  if (!problem) {
-    return <div>Loading...</div>;
-  }
-
   const handleRunCode = async () => {
     if (testCases.length > 0) {
       const results = [];
+      let allPassed = true;
       for (let i = 0; i < testCases.length; i++) {
         const selectedTestCase = testCases[i];
         try {
           const result = await runCode(language, code, selectedTestCase.input);
           const isPassed =
             result.output.trim() === selectedTestCase.output.trim();
+          if (!isPassed) {
+            allPassed = false;
+          }
           results.push({
             input: selectedTestCase.input,
             expected: selectedTestCase.output,
@@ -140,6 +142,7 @@ const CodeEditor = () => {
               "Error executing code: " + (error.message || "Unknown error"),
             passed: false,
           });
+          allPassed = false;
         }
       }
       setTestResults(results);
@@ -153,9 +156,18 @@ const CodeEditor = () => {
           )
           .join("\n\n")
       );
+
+      let newStatus = "unsolved";
+      if (allPassed) {
+        newStatus = "solved";
+      } else if (results.some((result) => result.passed)) {
+        newStatus = "attempted";
+      }
+      setStatus(newStatus);
+
       if (userId && id && language) {
         try {
-          await saveUserCode(id, userId, code, language);
+          await saveUserCode(id, userId, code, language, newStatus);
         } catch (error) {
           console.error("Failed to save user code:", error);
         }
@@ -232,6 +244,8 @@ const CodeEditor = () => {
         height="300px"
         extensions={[languageMode()]}
         onChange={(value) => setCode(value)}
+        theme="dark"
+        className="cm-theme-dark"
       />
       <button
         onClick={handleRunCode}
@@ -251,6 +265,7 @@ const CodeEditor = () => {
         placeholder="Output"
         className="my-2 p-2 border rounded mt-2"
       />
+      {status && <div>Status: {status}</div>}
       {testResults.length > 0 && (
         <div className="mt-4">
           {testResults.map((result, index) => (
@@ -281,6 +296,7 @@ const CodeEditor = () => {
                 <p>User: {submission.userId.userName}</p>
                 <p>Code: {submission.code}</p>
                 <p>Language: {submission.language}</p>
+                <p>Status: {submission.status}</p>
               </div>
             ))}
           </div>
