@@ -51,6 +51,7 @@ const CodeEditor = () => {
   const [showSubmissions, setShowSubmissions] = useState(false);
   const [submissions, setSubmissions] = useState([]);
   const [status, setStatus] = useState("unsolved");
+  const [selectedCode, setSelectedCode] = useState("");
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -292,13 +293,39 @@ const CodeEditor = () => {
             </span>
             <h2>All Submissions</h2>
             {submissions.map((submission, index) => (
-              <div key={index} className="p-2 mb-2 border rounded">
-                <p>User: {submission.userId.userName}</p>
-                <p>Code: {submission.code}</p>
-                <p>Language: {submission.language}</p>
-                <p>Status: {submission.status}</p>
+              <div
+                key={index}
+                className="flex justify-between p-2 mb-2 border rounded"
+              >
+                <div>
+                  <p>User: {submission.userId.userName}</p>
+                  <p>Language: {submission.language}</p>
+                </div>
+                <button
+                  onClick={() => setSelectedCode(submission.code)}
+                  className="bg-gray-800 text-white rounded p-2"
+                >
+                  View Code
+                </button>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+      {selectedCode && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={() => setSelectedCode("")}>
+              &times;
+            </span>
+            <CodeMirror
+              value={selectedCode}
+              height="600px"
+              extensions={[languageMode()]}
+              readOnly
+              theme="dark"
+              className="cm-theme-dark"
+            />
           </div>
         </div>
       )}
