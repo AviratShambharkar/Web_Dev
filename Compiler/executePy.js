@@ -13,17 +13,42 @@ if (!fs.existsSync(outputPath)) {
   fs.mkdirSync(outputPath, { recursive: true });
 }
 
-const executePy = (filepath, inputPath) => {
+const executePy = (filepath, inputPath, timeout = 5000) => {
+  // Default timeout 5 seconds
+  const jobId = path.basename(filepath).split(".")[0];
+  const errorPath = path.join(outputPath, `${jobId}.err`);
+
   return new Promise((resolve, reject) => {
-    exec(`python ${filepath} < ${inputPath}`, (error, stdout, stderr) => {
-      if (error) {
-        reject({ error, stderr });
+    const command = `python ${filepath}`;
+
+    // Start the process
+    const process = exec(
+      command,
+      { timeout, input: fs.readFileSync(inputPath) },
+      (error, stdout, stderr) => {
+        // Handle process errors
+        if (error) {
+          reject({
+            error: error.message,
+            stderr: stderr || error.message,
+          });
+          return;
+        }
+        if (stderr) {
+          reject(stderr);
+          return;
+        }
+        resolve(stdout);
       }
-      if (stderr) {
-        reject(stderr);
-      }
-      resolve(stdout);
+    );
+
+    // Handle process termination due to timeout
+    process.on("error", (err) => {
+      reject({ error: err.message });
     });
+
+    // Optionally log the errors to a file
+    process.stderr.pipe(fs.createWriteStream(errorPath));
   });
 };
 

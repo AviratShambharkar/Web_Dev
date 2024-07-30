@@ -13,7 +13,8 @@ if (!fs.existsSync(outputPath)) {
   fs.mkdirSync(outputPath, { recursive: true });
 }
 
-const executeCpp = (filepath, inputPath) => {
+const executeCpp = (filepath, inputPath, timeout = 5000) => {
+  // 5000 ms = 5 seconds
   const jobId = path.basename(filepath).split(".")[0];
   const outPath = path.join(outputPath, jobId);
 
@@ -22,14 +23,32 @@ const executeCpp = (filepath, inputPath) => {
     if (inputPath) {
       command += ` < ${inputPath}`;
     }
-    exec(command, (error, stdout, stderr) => {
+
+    // Execute the command with a timeout
+    const child = exec(command, { timeout }, (error, stdout, stderr) => {
       if (error) {
-        reject({ error, stderr });
+        if (error.code === 1) {
+          // Compilation error
+          reject({ error, stderr });
+        } else if (error.killed) {
+          // Timeout error
+          reject({
+            error: new Error("Process killed due to timeout"),
+            stderr: "Time Limit Exceeded",
+          });
+        } else {
+          reject({ error, stderr });
+        }
       } else if (stderr) {
         reject(stderr);
       } else {
         resolve(stdout);
       }
+    });
+
+    // Handle the case where the process was killed due to timeout
+    child.on("error", (err) => {
+      reject({ error: err, stderr: "Process error" });
     });
   });
 };
