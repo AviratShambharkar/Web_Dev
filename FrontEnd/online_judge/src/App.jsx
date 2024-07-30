@@ -28,7 +28,7 @@ function App() {
 
 function AppContent() {
   const location = useLocation();
-  const hideNavbarPaths = ["/login", "/signUp"];
+  const hideNavbarPaths = ["/login", "/signUp", "/forgot-password"];
 
   return (
     <div>
