@@ -7,7 +7,8 @@ const userCodeSchema = new mongoose.Schema({
     required: true,
   },
   problemId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Problem", // Reference the Problem model
     required: true,
   },
   language: {
