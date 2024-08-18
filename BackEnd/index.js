@@ -13,7 +13,7 @@ import userRoutes from "./routes/user.js";
 import submissionRoutes from "./routes/submissions.js";
 
 const app = express();
-const port = 3000;
+const port = 8000;
 
 app.use(
   cors({

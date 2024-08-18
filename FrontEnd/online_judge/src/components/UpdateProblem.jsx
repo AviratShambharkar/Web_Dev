@@ -74,69 +74,73 @@ function UpdateProblem() {
   };
 
   return (
-    <div>
+    <div className="min-h-screen flex flex-col bg-gray-900 text-white">
       <Navbar />
-      <div className="min-h-screen flex flex-col items-center bg-gray-900 text-white pt-20">
-        <div className="w-full max-w-4xl p-4 bg-white rounded shadow-lg text-gray-900">
-          <h1 className="text-3xl font-bold mb-4">Update Problem</h1>
-          <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="flex-grow flex items-center justify-center pt-20">
+        <div className="w-full max-w-4xl p-6 bg-gray-800 rounded-lg shadow-lg">
+          <h1 className="text-3xl font-bold mb-6">Update Problem</h1>
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block font-bold">Title</label>
+              <label className="block text-lg font-semibold">Title</label>
               <input
                 type="text"
                 name="title"
                 value={problem.title}
                 onChange={handleChange}
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white"
                 required
               />
             </div>
             <div>
-              <label className="block font-bold">Description</label>
+              <label className="block text-lg font-semibold">Description</label>
               <textarea
                 name="description"
                 value={problem.description}
                 onChange={handleChange}
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white"
                 required
               />
             </div>
             <div>
-              <label className="block font-bold">Input Format</label>
+              <label className="block text-lg font-semibold">
+                Input Format
+              </label>
               <textarea
                 name="input_format"
                 value={problem.input_format}
                 onChange={handleChange}
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white"
                 required
               />
             </div>
             <div>
-              <label className="block font-bold">Output Format</label>
+              <label className="block text-lg font-semibold">
+                Output Format
+              </label>
               <textarea
                 name="output_format"
                 value={problem.output_format}
                 onChange={handleChange}
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white"
                 required
               />
             </div>
             <div>
-              <label className="block font-bold">Constraints</label>
+              <label className="block text-lg font-semibold">Constraints</label>
               <textarea
                 name="constraints"
                 value={problem.constraints}
                 onChange={handleChange}
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white"
               />
             </div>
             <div>
-              <label className="block font-bold">Difficulty</label>
+              <label className="block text-lg font-semibold">Difficulty</label>
               <select
                 name="difficulty"
                 value={problem.difficulty}
                 onChange={handleChange}
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white"
                 required
               >
                 <option value="">Select Difficulty</option>
@@ -146,7 +150,7 @@ function UpdateProblem() {
               </select>
             </div>
             <div>
-              <label className="block font-bold">Tags</label>
+              <label className="block text-lg font-semibold">Tags</label>
               <input
                 type="text"
                 name="tags"
@@ -157,39 +161,46 @@ function UpdateProblem() {
                     tags: e.target.value.split(",").map((tag) => tag.trim()),
                   }))
                 }
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white"
               />
             </div>
             <div>
-              <label className="block font-bold">Test Cases</label>
+              <label className="block text-lg font-semibold">Test Cases</label>
               {problem.test_cases.map((testCase, index) => (
-                <div key={index} className="border p-2 mb-2 rounded">
-                  <div className="flex justify-between items-center mb-2">
-                    <h3 className="font-bold">Test Case {index + 1}</h3>
+                <div
+                  key={index}
+                  className="border border-gray-600 p-4 mb-4 rounded bg-gray-800"
+                >
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-xl font-semibold">
+                      Test Case {index + 1}
+                    </h3>
                     <button
                       type="button"
                       onClick={() => removeTestCase(index)}
-                      className="text-red-500"
+                      className="text-red-500 hover:text-red-400"
                     >
                       Remove
                     </button>
                   </div>
                   <div>
-                    <label className="block font-bold">Input</label>
+                    <label className="block text-sm font-semibold">Input</label>
                     <textarea
                       name="input"
                       value={testCase.input}
                       onChange={(e) => handleTestCaseChange(index, e)}
-                      className="w-full p-2 border rounded"
+                      className="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white"
                     />
                   </div>
                   <div>
-                    <label className="block font-bold">Output</label>
+                    <label className="block text-sm font-semibold">
+                      Output
+                    </label>
                     <textarea
                       name="output"
                       value={testCase.output}
                       onChange={(e) => handleTestCaseChange(index, e)}
-                      className="w-full p-2 border rounded"
+                      className="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white"
                     />
                   </div>
                 </div>
@@ -197,14 +208,14 @@ function UpdateProblem() {
               <button
                 type="button"
                 onClick={addTestCase}
-                className="w-full p-2 bg-green-500 text-white rounded"
+                className="w-full p-3 bg-green-600 text-white rounded hover:bg-green-500"
               >
                 Add Test Case
               </button>
             </div>
             <button
               type="submit"
-              className="w-full p-2 bg-blue-500 text-white rounded"
+              className="w-full p-3 bg-blue-600 text-white rounded hover:bg-blue-500"
             >
               Update Problem
             </button>

@@ -8,7 +8,6 @@ function EditProfile() {
   const [profile, setProfile] = useState({ name: "", bio: "", avatarUrl: "" });
   const [preferences, setPreferences] = useState({
     programmingLanguage: "",
-    theme: "",
   });
   const navigate = useNavigate();
 
@@ -47,46 +46,50 @@ function EditProfile() {
   };
 
   if (!user) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+        Loading...
+      </div>
+    );
   }
 
   return (
-    <div>
+    <div className="min-h-screen flex flex-col bg-gray-900 text-white">
       <Navbar />
-      <div className="min-h-screen flex flex-col items-center bg-gray-900 text-white pt-20">
-        <div className="w-full max-w-4xl p-4 bg-white rounded shadow-lg text-gray-900">
-          <h1 className="text-3xl font-bold mb-4">Edit Profile</h1>
+      <div className="flex-grow pt-20 px-4 flex items-center justify-center">
+        <div className="w-full max-w-4xl bg-gray-800 p-6 rounded-lg shadow-lg">
+          <h1 className="text-3xl font-bold mb-6">Edit Profile</h1>
           <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
             <div>
-              <label className="block text-gray-700">Name</label>
+              <label className="block text-gray-300">Name</label>
               <input
                 type="text"
                 value={profile.name}
                 onChange={handleNameChange}
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded bg-gray-700 text-white"
               />
             </div>
             <div>
-              <label className="block text-gray-700">Bio</label>
+              <label className="block text-gray-300">Bio</label>
               <textarea
                 value={profile.bio}
                 onChange={(e) =>
                   setProfile({ ...profile, bio: e.target.value })
                 }
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded bg-gray-700 text-white"
               />
             </div>
             <div>
-              <label className="block text-gray-700">Avatar URL</label>
+              <label className="block text-gray-300">Avatar URL</label>
               <input
                 type="text"
                 value={profile.avatarUrl}
                 readOnly
-                className="w-full p-2 border rounded bg-gray-100 cursor-not-allowed"
+                className="w-full p-2 border rounded bg-gray-600 text-gray-400 cursor-not-allowed"
               />
             </div>
             <div>
-              <label className="block text-gray-700">
+              <label className="block text-gray-300">
                 Programming Language
               </label>
               <select
@@ -97,24 +100,12 @@ function EditProfile() {
                     programmingLanguage: e.target.value,
                   })
                 }
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded bg-gray-700 text-white"
               >
+                <option value="C">C</option>
                 <option value="C++">C++</option>
                 <option value="Java">Java</option>
                 <option value="Python">Python</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-gray-700">Theme</label>
-              <select
-                value={preferences.theme}
-                onChange={(e) =>
-                  setPreferences({ ...preferences, theme: e.target.value })
-                }
-                className="w-full p-2 border rounded"
-              >
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
               </select>
             </div>
             <button

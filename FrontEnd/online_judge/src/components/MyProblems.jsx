@@ -30,24 +30,24 @@ function MyProblems() {
   };
 
   return (
-    <div>
+    <div className="min-h-screen flex flex-col bg-gray-900 text-white">
       <Navbar />
-      <div className="min-h-screen flex flex-col items-center bg-gray-900 text-white pt-20">
-        <div className="w-full max-w-4xl p-4 bg-white rounded shadow-lg text-gray-900">
-          <h1 className="text-3xl font-bold mb-4">My Problems</h1>
+      <div className="flex-grow pt-20 px-4 flex items-center justify-center">
+        <div className="w-full max-w-4xl bg-gray-800 p-6 rounded-lg shadow-lg">
+          <h1 className="text-3xl font-bold mb-6">My Problems</h1>
           <div className="space-y-4">
             {problems.length === 0 ? (
-              <div>No problems posted by you.</div>
+              <div className="text-center">No problems posted by you.</div>
             ) : (
               problems.map((problem) => (
                 <div
                   key={problem._id}
-                  className="p-4 border rounded flex justify-between items-center"
+                  className="p-4 border border-gray-700 rounded bg-gray-900 flex justify-between items-center"
                 >
-                  <div>
-                    <h2 className="text-2xl font-bold">{problem.title}</h2>
-                    <p>{problem.description}</p>
-                    <p>
+                  <div className="flex-1">
+                    <h2 className="text-2xl font-bold mb-2">{problem.title}</h2>
+                    <p className="mb-2">{problem.description}</p>
+                    <p className="mb-2">
                       <strong>Difficulty:</strong> {problem.difficulty}
                     </p>
                     <p>
@@ -59,13 +59,13 @@ function MyProblems() {
                       onClick={() =>
                         navigate(`/my-problems/${problem._id}/update`)
                       }
-                      className="ml-4 p-2 bg-blue-500 text-white rounded"
+                      className="p-2 bg-blue-600 text-white rounded hover:bg-blue-500"
                     >
                       Update
                     </button>
                     <button
                       onClick={() => handleDelete(problem._id)}
-                      className="ml-4 p-2 bg-red-500 text-white rounded"
+                      className="p-2 bg-red-600 text-white rounded hover:bg-red-500"
                     >
                       Delete
                     </button>

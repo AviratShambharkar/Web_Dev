@@ -15,4 +15,20 @@ router.get("/submissions/:problemId", authMiddleware, async (req, res) => {
   }
 });
 
+router.get("/submissions/solved/:userId", authMiddleware, async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const solvedProblems = await UserCode.find({
+      userId: userId,
+      status: "solved",
+    }).populate("problemId", "title description difficulty tags");
+
+    res.json(solvedProblems);
+  } catch (error) {
+    console.error("Error in fetching solved problems:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 export default router;

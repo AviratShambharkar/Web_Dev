@@ -13,18 +13,26 @@ if (!fs.existsSync(outputPath)) {
   fs.mkdirSync(outputPath, { recursive: true });
 }
 
-const executeJava = (filepath, inputPath, timeout = 5000) => {
+const executeJava = (filepath, inputPath = null, timeout = 5000) => {
   // Default timeout 5 seconds
   const jobId = path.basename(filepath).split(".")[0];
   const errorPath = path.join(outputPath, `${jobId}.err`);
 
   return new Promise((resolve, reject) => {
-    const command = `java ${filepath}`;
+    let command;
+
+    if (inputPath) {
+      // Command with input file
+      command = `java ${filepath}`;
+    } else {
+      // Command without input file
+      command = `java ${filepath}`;
+    }
 
     // Start the process
     const process = exec(
       command,
-      { timeout, input: fs.readFileSync(inputPath) },
+      { timeout, input: inputPath ? fs.readFileSync(inputPath) : undefined },
       (error, stdout, stderr) => {
         // Handle process errors
         if (error) {

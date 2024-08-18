@@ -45,3 +45,15 @@ export const getAllSubmissions = async (problemId) => {
     throw error;
   }
 };
+
+export const getSolvedProblems = async (userId) => {
+  try {
+    const response = await axiosInstance.get(
+      `/submissions/submissions/solved/${userId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching solved problems:", error);
+    throw error;
+  }
+};

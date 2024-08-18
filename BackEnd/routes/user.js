@@ -45,7 +45,7 @@ router.post("/saveUserCode", authMiddleware, async (req, res) => {
       userCode.code = code;
       userCode.status = status;
     } else {
-      userCode = new UserCode({ userId, problemId, code, language });
+      userCode = new UserCode({ userId, problemId, code, language, status });
     }
 
     await userCode.save();

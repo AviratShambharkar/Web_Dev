@@ -13,7 +13,7 @@ if (!fs.existsSync(outputPath)) {
   fs.mkdirSync(outputPath, { recursive: true });
 }
 
-const executePy = (filepath, inputPath, timeout = 5000) => {
+const executePy = (filepath, inputPath = null, timeout = 5000) => {
   // Default timeout 5 seconds
   const jobId = path.basename(filepath).split(".")[0];
   const errorPath = path.join(outputPath, `${jobId}.err`);
@@ -24,7 +24,10 @@ const executePy = (filepath, inputPath, timeout = 5000) => {
     // Start the process
     const process = exec(
       command,
-      { timeout, input: fs.readFileSync(inputPath) },
+      {
+        timeout,
+        input: inputPath ? fs.readFileSync(inputPath) : undefined,
+      },
       (error, stdout, stderr) => {
         // Handle process errors
         if (error) {

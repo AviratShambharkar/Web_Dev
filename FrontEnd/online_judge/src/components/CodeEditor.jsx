@@ -103,7 +103,11 @@ const CodeEditor = () => {
   }, [id]);
 
   if (!problem) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+        Loading...
+      </div>
+    );
   }
 
   const handleViewSubmissions = async () => {
@@ -151,11 +155,9 @@ const CodeEditor = () => {
         results
           .map(
             (res, idx) =>
-              `Test Case ${idx + 1}:\n${
-                res.passed ? "Passed" : "Failed"
-              }\nExpected: ${res.expected}\nOutput: ${res.output}`
+              `Test Case ${idx + 1}: ${res.passed ? "Passed" : "Failed"}`
           )
-          .join("\n\n")
+          .join("\n")
       );
 
       let newStatus = "unsolved";
@@ -193,7 +195,7 @@ const CodeEditor = () => {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full p-4 bg-gray-900 text-white">
       <style>
         {`
           .modal {
@@ -210,11 +212,12 @@ const CodeEditor = () => {
             background-color: rgba(0, 0, 0, 0.5);
           }
           .modal-content {
-            background-color: #fefefe;
+            background-color: #1f1f1f;
             margin: auto;
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
+            max-width: 800px;
           }
           .close {
             color: #aaa;
@@ -224,7 +227,7 @@ const CodeEditor = () => {
           }
           .close:hover,
           .close:focus {
-            color: black;
+            color: white;
             text-decoration: none;
             cursor: pointer;
           }
@@ -233,7 +236,7 @@ const CodeEditor = () => {
       <select
         value={language}
         onChange={(e) => setLanguage(e.target.value)}
-        className="mb-2"
+        className="mb-4 p-2 bg-gray-700 text-white border rounded"
       >
         <option value="cpp">C++</option>
         <option value="c">C</option>
@@ -250,13 +253,13 @@ const CodeEditor = () => {
       />
       <button
         onClick={handleRunCode}
-        className="p-2 bg-gray-800 text-white rounded"
+        className="p-2 bg-blue-600 text-white rounded mt-4 hover:bg-blue-700"
       >
         Run Code
       </button>
       <button
         onClick={handleViewSubmissions}
-        className="p-2 bg-blue-500 text-white rounded mt-2"
+        className="p-2 bg-green-600 text-white rounded mt-2 hover:bg-green-700"
       >
         View All Submissions
       </button>
@@ -264,23 +267,21 @@ const CodeEditor = () => {
         value={output}
         readOnly
         placeholder="Output"
-        className="my-2 p-2 border rounded mt-2"
+        className="my-2 p-2 border rounded bg-gray-800 text-white"
       />
-      {status && <div>Status: {status}</div>}
+      {status && <div className="mt-2">Status: {status}</div>}
       {testResults.length > 0 && (
         <div className="mt-4">
           {testResults.map((result, index) => (
             <div
               key={index}
               className={`p-2 rounded mb-2 ${
-                result.passed ? "bg-green-500" : "bg-red-500"
+                result.passed ? "bg-green-600" : "bg-red-600"
               }`}
             >
-              <p>Test Case {index + 1}:</p>
-              <p>Input: {result.input}</p>
-              <p>Expected Output: {result.expected}</p>
-              <p>Actual Output: {result.output}</p>
-              <p>{result.passed ? "Passed" : "Failed"}</p>
+              <p>
+                Test Case {index + 1}: {result.passed ? "Passed" : "Failed"}
+              </p>
             </div>
           ))}
         </div>
@@ -295,15 +296,16 @@ const CodeEditor = () => {
             {submissions.map((submission, index) => (
               <div
                 key={index}
-                className="flex justify-between p-2 mb-2 border rounded"
+                className="flex justify-between p-2 mb-2 border rounded bg-gray-800 text-white"
               >
                 <div>
                   <p>User: {submission.userId.userName}</p>
                   <p>Language: {submission.language}</p>
+                  <p>Status: {submission.status}</p>
                 </div>
                 <button
                   onClick={() => setSelectedCode(submission.code)}
-                  className="bg-gray-800 text-white rounded p-2"
+                  className="bg-gray-700 text-white rounded p-2 hover:bg-gray-600"
                 >
                   View Code
                 </button>
