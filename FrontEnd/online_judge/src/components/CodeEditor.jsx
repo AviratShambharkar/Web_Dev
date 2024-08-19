@@ -15,7 +15,6 @@ import { getUserProfile } from "../services/userService";
 
 const codeTemplates = {
   cpp: `#include <iostream>
-
 int main() {
     std::cout << "Hello World!";
     return 0;
@@ -29,7 +28,6 @@ int main() {
    return 0;
 }`,
   java: `import java.util.Scanner;
-
 class Test
 {
     public static void main(String []args)
@@ -194,45 +192,60 @@ const CodeEditor = () => {
     }
   };
 
+  const handleCloseModal = () => {
+    setShowSubmissions(false);
+    setSelectedCode("");
+  };
+
   return (
     <div className="flex flex-col h-full p-4 bg-gray-900 text-white">
       <style>
         {`
-          .modal {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.5);
-          }
-          .modal-content {
-            background-color: #1f1f1f;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 800px;
-          }
-          .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-          }
-          .close:hover,
-          .close:focus {
-            color: white;
-            text-decoration: none;
-            cursor: pointer;
-          }
-        `}
+    .modal {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    .modal-content {
+      background-color: #1f1f1f;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 800px;
+      max-height: 80%;
+      overflow-y: auto;
+      position: relative; /* Make sure positioning works for the close button */
+    }
+    .close {
+      color: #aaa;
+      font-size: 28px;
+      font-weight: bold;
+      position: absolute;
+      right: 20px;
+      top: 7px; /* Adjust this value to position the close button higher */
+      cursor: pointer;
+    }
+    .close:hover,
+    .close:focus {
+      color: white;
+      text-decoration: none;
+    }
+    .modal-content pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  `}
       </style>
+
       <select
         value={language}
         onChange={(e) => setLanguage(e.target.value)}
@@ -289,37 +302,42 @@ const CodeEditor = () => {
       {showSubmissions && (
         <div className="modal">
           <div className="modal-content">
-            <span className="close" onClick={() => setShowSubmissions(false)}>
+            <span className="close" onClick={handleCloseModal}>
               &times;
             </span>
             <h2>All Submissions</h2>
-            {submissions.map((submission, index) => (
-              <div
-                key={index}
-                className="flex justify-between p-2 mb-2 border rounded bg-gray-800 text-white"
-              >
-                <div>
-                  <p>User: {submission.userId.userName}</p>
-                  <p>Language: {submission.language}</p>
-                  <p>Status: {submission.status}</p>
-                </div>
-                <button
-                  onClick={() => setSelectedCode(submission.code)}
-                  className="bg-gray-700 text-white rounded p-2 hover:bg-gray-600"
+            {submissions.length > 0 ? (
+              submissions.map((submission, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between p-2 mb-2 border rounded bg-gray-800 text-white"
                 >
-                  View Code
-                </button>
-              </div>
-            ))}
+                  <div>
+                    <p>User: {submission.userId.userName}</p>
+                    <p>Language: {submission.language}</p>
+                    <p>Status: {submission.status}</p>
+                  </div>
+                  <button
+                    onClick={() => setSelectedCode(submission.code)}
+                    className="bg-gray-700 text-white rounded p-2 hover:bg-gray-600"
+                  >
+                    View Code
+                  </button>
+                </div>
+              ))
+            ) : (
+              <p>No submissions available</p>
+            )}
           </div>
         </div>
       )}
       {selectedCode && (
         <div className="modal">
           <div className="modal-content">
-            <span className="close" onClick={() => setSelectedCode("")}>
+            <span className="close" onClick={handleCloseModal}>
               &times;
             </span>
+            <h2>Submitted Code</h2>
             <CodeMirror
               value={selectedCode}
               height="600px"

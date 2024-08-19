@@ -23,7 +23,7 @@ function SignUpPage() {
       const response = await signUp(formData);
       localStorage.setItem("token", response.token);
       localStorage.setItem("user", JSON.stringify(response.user));
-      navigate("/home");
+      navigate("/login");
       console.log("Registration successful:", response);
     } catch (err) {
       setError("Registration failed");
